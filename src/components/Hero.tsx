@@ -13,14 +13,7 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <div className="flex items-center space-x-3 mb-6 rounded-xl bg-slate-100">
-              
-              <div>
-                
-                <p className="mt-2 text-zinc-950 text-lg font-semibold">
-              </p>
-              </div>
-            </div>
+            
             
             <h2 className="text-4xl font-bold text-gray-900 leading-tight">
               Transforme seu negócio com 
