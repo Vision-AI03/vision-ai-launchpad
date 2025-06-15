@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
               <img src="/lovable-uploads/70ee6f44-7030-472c-a2a3-4d3796b66f1e.png" alt="Vision AI Logo" className="h-10 w-auto filter brightness-0 invert" />
-              <span className="text-2xl font-bold">Vision AI</span>
+              <span className="font-bold text-xl">VISION AI</span>
             </div>
             <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-md">
               Transformamos negócios com inteligência artificial. Criamos agentes IA personalizados 
