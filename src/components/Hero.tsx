@@ -17,7 +17,7 @@ const Hero = () => {
               <img alt="Vision AI Logo" className="h-16 w-auto" src="/lovable-uploads/b1e2e190-fb60-46ed-951e-d24e08aa3a4e.png" />
               <div>
                 <h1 className="text-5xl font-bold text-gray-900 leading-tight">
-                  Vision <span className="text-blue-600">AI</span>
+                  Vision <span className="text-blue-600"></span>
                 </h1>
                 <p className="text-xl text-gray-600 mt-2">Agência de Inteligência Artificial</p>
               </div>
