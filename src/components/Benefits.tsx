@@ -69,11 +69,11 @@ const Benefits = () => {
                 <p className="text-gray-600">Agentes Criados</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">60 Mil+</div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">30 Mil+</div>
                 <p className="text-gray-600">Interações Processadas</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">90%</div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">80%</div>
                 <p className="text-gray-600">Satisfação dos Clientes</p>
               </div>
               <div>
