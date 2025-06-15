@@ -47,7 +47,7 @@ const Testimonials = () => {
               </p>
               
               <div className="flex items-center">
-                <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mr-4 object-cover" />
+                
                 <div>
                   <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
                   <p className="text-blue-600 font-medium">{testimonial.position}</p>
