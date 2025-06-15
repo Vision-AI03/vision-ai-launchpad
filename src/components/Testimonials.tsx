@@ -1,23 +1,25 @@
 import { Star, Quote } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 const Testimonials = () => {
   const testimonials = [{
     name: "Carlos Silva",
-    position: "CEO, TechStart",
-    company: "Startup de Tecnologia",
+    position: "Advogado",
+    company: "Escritório Silva & Associados",
     content: "A Vision AI transformou completamente nosso atendimento ao cliente. Conseguimos reduzir o tempo de resposta em 90% e aumentar a satisfação dos clientes significativamente.",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
   }, {
     name: "Ana Beatriz",
-    position: "Diretora de Marketing",
-    company: "E-commerce Fashion",
+    position: "Consultora de Vendas",
+    company: "Vendas Premium",
     content: "Os agentes IA para vendas da Vision AI aumentaram nossas conversões em 45%. A qualificação automática de leads é simplesmente incrível!",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
   }, {
     name: "Roberto Santos",
-    position: "CTO",
-    company: "Fintech Solutions",
+    position: "Moda Feminina",
+    company: "Boutique Elegância",
     content: "Implementamos as automações da Vision AI e conseguimos otimizar 80% dos nossos processos internos. O ROI foi impressionante!",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
@@ -47,7 +49,10 @@ const Testimonials = () => {
               </p>
               
               <div className="flex items-center">
-                
+                <Avatar className="w-12 h-12 mr-4">
+                  <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                  <AvatarFallback>{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
                 <div>
                   <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
                   <p className="text-blue-600 font-medium">{testimonial.position}</p>
