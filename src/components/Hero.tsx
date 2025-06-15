@@ -1,26 +1,20 @@
-
 import { ArrowRight, Bot, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const Hero = () => {
   const scrollToContact = () => {
     const element = document.getElementById('contact');
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
-  return (
-    <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+  return <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="flex items-center space-x-3 mb-6">
-              <img 
-                src="/lovable-uploads/70ee6f44-7030-472c-a2a3-4d3796b66f1e.png" 
-                alt="Vision AI Logo" 
-                className="h-16 w-auto"
-              />
+              <img alt="Vision AI Logo" className="h-16 w-auto" src="/lovable-uploads/b1e2e190-fb60-46ed-951e-d24e08aa3a4e.png" />
               <div>
                 <h1 className="text-5xl font-bold text-gray-900 leading-tight">
                   Vision <span className="text-blue-600">AI</span>
@@ -40,20 +34,13 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6"
-                onClick={scrollToContact}
-              >
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6" onClick={scrollToContact}>
                 Começar Agora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-6"
-                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-              >
+              <Button variant="outline" size="lg" className="border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-6" onClick={() => document.getElementById('services')?.scrollIntoView({
+              behavior: 'smooth'
+            })}>
                 Ver Serviços
               </Button>
             </div>
@@ -118,8 +105,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
