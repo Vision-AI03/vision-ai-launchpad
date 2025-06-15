@@ -14,11 +14,9 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="flex items-center space-x-3 mb-6">
-              <img alt="Vision AI Logo" className="h-16 w-auto" src="/lovable-uploads/b1e2e190-fb60-46ed-951e-d24e08aa3a4e.png" />
+              <img alt="Vision AI Logo" src="/lovable-uploads/b1e2e190-fb60-46ed-951e-d24e08aa3a4e.png" className="h-16 w-auto object-fill" />
               <div>
-                <h1 className="text-5xl font-bold text-gray-900 leading-tight">
-                  Vision <span className="text-blue-600"></span>
-                </h1>
+                
                 <p className="text-xl text-gray-600 mt-2">Agência de Inteligência Artificial</p>
               </div>
             </div>
