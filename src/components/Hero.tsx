@@ -13,7 +13,7 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <div className="flex items-center space-x-3 mb-6">
+            <div className="flex items-center space-x-3 mb-6 rounded-xl bg-slate-100">
               <img alt="Vision AI Logo" src="/lovable-uploads/b1e2e190-fb60-46ed-951e-d24e08aa3a4e.png" className="h-16 w-auto object-fill" />
               <div>
                 
