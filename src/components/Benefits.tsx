@@ -65,11 +65,11 @@ const Benefits = () => {
             </h3>
             <div className="grid md:grid-cols-4 gap-8">
               <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">50+</div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">30+</div>
                 <p className="text-gray-600">Agentes Criados</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">200 Mil+</div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">60 Mil+</div>
                 <p className="text-gray-600">Interações Processadas</p>
               </div>
               <div>
