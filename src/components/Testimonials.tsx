@@ -1,3 +1,4 @@
+
 import { Star, Quote } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -15,7 +16,7 @@ const Testimonials = () => {
     company: "Vendas Premium",
     content: "Os agentes IA para vendas da Vision AI aumentaram nossas conversões em 45%. A qualificação automática de leads é simplesmente incrível!",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
   }, {
     name: "Roberto Santos",
     position: "Moda Feminina",
@@ -49,14 +50,14 @@ const Testimonials = () => {
               </p>
               
               <div className="flex items-center">
-                <Avatar className="w-12 h-12 mr-4">
+                <Avatar className="w-12 h-12 mr-4 flex-shrink-0">
                   <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                   <AvatarFallback>{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
-                <div>
-                  <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
-                  <p className="text-blue-600 font-medium">{testimonial.position}</p>
-                  <p className="text-gray-500 text-sm">{testimonial.company}</p>
+                <div className="flex flex-col justify-center">
+                  <h4 className="font-bold text-gray-900 leading-tight">{testimonial.name}</h4>
+                  <p className="text-blue-600 font-medium leading-tight">{testimonial.position}</p>
+                  <p className="text-gray-500 text-sm leading-tight">{testimonial.company}</p>
                 </div>
               </div>
             </div>)}
