@@ -19,7 +19,7 @@ const Benefits = () => {
     icon: Zap,
     title: "Resposta Instantânea",
     description: "Elimine o tempo de espera com respostas imediatas e precisas para todas as consultas.",
-    stats: "< 1 segundo"
+    stats: "< 10 segundos"
   }, {
     icon: Users,
     title: "Experiência Personalizada",
