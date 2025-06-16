@@ -1,7 +1,5 @@
-
 import { Star, Quote } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
 const Testimonials = () => {
   const testimonials = [{
     name: "Carlos Silva",
@@ -66,7 +64,7 @@ const Testimonials = () => {
         <div className="mt-16 bg-white rounded-3xl p-12 shadow-xl">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">90%</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">92%</div>
               <p className="text-gray-600">Taxa de Satisfação</p>
             </div>
             <div>

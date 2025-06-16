@@ -73,8 +73,8 @@ const Benefits = () => {
                 <p className="text-gray-600">Interações Processadas</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">80%</div>
-                <p className="text-gray-600">Satisfação dos Clientes</p>
+                <div className="text-4xl font-bold text-blue-600 mb-2">92%</div>
+                <p className="text-gray-600">NPS Positivo</p>
               </div>
               <div>
                 <div className="text-4xl font-bold text-blue-600 mb-2">24/7</div>

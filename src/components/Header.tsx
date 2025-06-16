@@ -14,10 +14,10 @@ const Header = () => {
   };
   return <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between rounded-md bg-transparent">
           <div className="flex items-center space-x-3">
-            <img src="/lovable-uploads/70ee6f44-7030-472c-a2a3-4d3796b66f1e.png" alt="Vision AI Logo" className="h-10 w-auto" />
-            <span className="font-bold text-xl text-blue-700">VISION AI</span>
+            <img alt="Vision AI Logo" className="h-10 w-auto" src="/lovable-uploads/f8f0e02d-80ba-4a9f-a45c-2bf98069b092.png" />
+            <span className="font-bold text-xl text-blue-600"> VISION AI</span>
           </div>
 
           {/* Desktop Navigation */}

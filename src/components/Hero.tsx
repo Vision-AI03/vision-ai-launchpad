@@ -1,7 +1,5 @@
-
 import { ArrowRight, Bot, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const Hero = () => {
   const scrollToContact = () => {
     const element = document.getElementById('contact');
@@ -11,15 +9,15 @@ const Hero = () => {
       });
     }
   };
-
-  return (
-    <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+  return <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
+            
+            
             <h2 className="text-4xl font-bold text-gray-900 leading-tight">
               Transforme seu negócio com 
-              <span className="text-blue-600"> Agentes IA</span> inteligentes
+              <span className="text-blue-600"> Agentes Inteligentes</span> inteligentes
             </h2>
             
             <p className="text-xl text-gray-600 leading-relaxed">
@@ -99,8 +97,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
