@@ -1,4 +1,3 @@
-
 import { ArrowRight, Bot, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 const Hero = () => {
@@ -18,7 +17,7 @@ const Hero = () => {
             
             <h2 className="text-4xl font-bold text-gray-900 leading-tight">
               Transforme seu negócio com 
-              <span className="text-blue-600"> Agentes de IA e Automações Inteligentes</span>
+              <span className="text-blue-600"> Agentes de IA</span> e Automações
             </h2>
             
             <p className="text-xl text-gray-600 leading-relaxed">
