@@ -17,7 +17,7 @@ const LeadForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://n8n.agenciavisionai.com/webhook/webhook-leads", {
+      const response = await fetch("https://n8n.agenciavisionai.com/webhook-test/webhook-leads", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
