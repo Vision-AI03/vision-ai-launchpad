@@ -17,6 +17,8 @@ const LeadForm = () => {
     e.preventDefault();
 
     try {
+      console.log("Dados sendo enviados:", formData);
+      console.log("Resposta recebida:", response.status);
       const response = await fetch("https://n8n.agenciavisionai.com/webhook/88e060a0-6d69-497b-9289-811a826e2a4e, {
         method: "POST",
         headers: {
