@@ -9,16 +9,17 @@ const LeadForm = () => {
     mensagem: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
       console.log("Dados sendo enviados:", formData);
       console.log("Resposta recebida:", response.status);
+      
       const response = await fetch("https://n8n.agenciavisionai.com/webhook-test/leads-site", {
         method: "POST",
         headers: {
@@ -27,7 +28,13 @@ const LeadForm = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log("Status da resposta:", response.status);
+      console.log("Response OK:", response.ok);
+
       if (response.ok) {
+        const responseData = await response.text();
+        console.log("Dados da resposta:", responseData);
+        
         alert("Mensagem enviada com sucesso!");
         setFormData({
           nome: "",
@@ -37,11 +44,14 @@ const LeadForm = () => {
           mensagem: "",
         });
       } else {
-        alert("Erro ao enviar. Tente novamente.");
+        const errorText = await response.text();
+        console.error("Erro da API:", errorText);
+        console.error("Status:", response.status);
+        alert(`Erro ao enviar (${response.status}): ${errorText || 'Tente novamente.'}`);
       }
     } catch (error) {
-      console.error("Erro ao enviar:", error);
-      alert("Erro de conexão. Tente novamente.");
+      console.error("Erro de conexão:", error);
+      alert("Erro de conexão. Verifique sua internet e tente novamente.");
     }
   };
 
@@ -90,4 +100,3 @@ const LeadForm = () => {
 };
 
 export default LeadForm;
-
