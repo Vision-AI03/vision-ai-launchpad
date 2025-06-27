@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,25 +16,18 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const response = await fetch("https://n8n.agenciavisionai.com/webhook/site-vision", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Adicionar headers para CORS se necessário
-          "Accept": "application/json",
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Enviar dados para o Zapier webhook
-      const response = await fetch(ZAPIER_WEBHOOK_URL, {
+      // Enviar dados para o n8n webhook
+      const response = await fetch("https://n8n.agenciavisionai.com/webhook/site-vision", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        mode: "no-cors",
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -47,21 +39,25 @@ const Contact = () => {
         }),
       });
 
-      console.log("Dados enviados para Zapier:", formData);
+      if (response.ok) {
+        console.log("Dados enviados com sucesso para n8n:", formData);
+        
+        toast({
+          title: "Mensagem enviada!",
+          description: "Seus dados foram enviados com sucesso. Entraremos em contato em breve."
+        });
 
-      toast({
-        title: "Mensagem enviada!",
-        description: "Seus dados foram enviados com sucesso. Entraremos em contato em breve."
-      });
-
-      // Limpar formulário
-      setFormData({
-        name: "",
-        email: "",
-        company: "",
-        phone: "",
-        message: ""
-      });
+        // Limpar formulário
+        setFormData({
+          name: "",
+          email: "",
+          company: "",
+          phone: "",
+          message: ""
+        });
+      } else {
+        throw new Error(`Erro na resposta: ${response.status}`);
+      }
 
     } catch (error) {
       console.error("Erro ao enviar dados:", error);
