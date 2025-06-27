@@ -17,8 +17,12 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Webhook URL do Zapier - você precisará substituir pela sua própria URL
-  const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID/YOUR_WEBHOOK_ID";
+  const response = await fetch("https://n8n.agenciavisionai.com/webhook/site-vision", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Adicionar headers para CORS se necessário
+          "Accept": "application/json",
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
