@@ -22,7 +22,7 @@ const Contact = () => {
 
     try {
       // Enviar dados para o n8n webhook
-      const response = await fetch("https://n8n.agenciavisionai.com/webhook/site-vision", {
+      const response = await fetch("https://n8n.agenciavisionai.com/webhook-test/site-vision", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
