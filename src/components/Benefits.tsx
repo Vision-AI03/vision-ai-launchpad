@@ -19,7 +19,7 @@ const Benefits = () => {
     icon: Zap,
     title: "Resposta Instantânea",
     description: "Elimine o tempo de espera com respostas imediatas e precisas para todas as consultas.",
-    stats: "< 10 segundos"
+    stats: "< -10 segundos"
   }, {
     icon: Users,
     title: "Experiência Personalizada",
@@ -58,32 +58,24 @@ const Benefits = () => {
             </div>)}
         </div>
 
-        <div className="mt-16 bg-white rounded-3xl p-12 shadow-xl">
-          <div className="text-center">
-            <h3 className="text-3xl font-bold text-gray-900 mb-6">
-              Resultados Comprovados
-            </h3>
-            <div className="grid md:grid-cols-4 gap-8">
-              <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">30+</div>
-                <p className="text-gray-600">Agentes Criados</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">30 Mil+</div>
-                <p className="text-gray-600">Interações Processadas</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">92%</div>
-                <p className="text-gray-600">NPS Positivo</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">24/7</div>
-                <p className="text-gray-600">Suporte Contínuo</p>
-              </div>
-            </div>
-          </div>
-        </div>
+       <div className="mt-16 bg-white rounded-3xl p-12 shadow-xl">
+  <div className="text-center">
+    <h3 className="text-3xl font-bold text-gray-900 mb-6">
+      Exemplos de Aplicação
+    </h3>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h4 className="text-xl font-semibold mb-2">Automação de Atendimento</h4>
+        <p className="text-gray-600">Implementamos agentes que atendem clientes de forma natural e instantânea, reduzindo a carga da equipe humana.</p>
       </div>
-    </section>;
-};
-export default Benefits;
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h4 className="text-xl font-semibold mb-2">Geração e Qualificação de Leads</h4>
+        <p className="text-gray-600">Captura dados, qualifica oportunidades e direciona os leads prontos para o seu time comercial ou CRM.</p>
+      </div>
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h4 className="text-xl font-semibold mb-2">Integrações Inteligentes</h4>
+        <p className="text-gray-600">Conectamos agentes a plataformas como WhatsApp, Google Sheets, CRMs e agendas, criando fluxos automatizados de ponta a ponta.</p>
+      </div>
+    </div>
+  </div>
+</div>
