@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -81,72 +81,18 @@ const Contact = () => {
   return (
     <section id="contact" className="py-20 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Entre em Contato
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Pronto para transformar seu negócio com IA? Vamos conversar sobre suas necessidades e criar a solução perfeita
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Fale Conosco
-              </h3>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Nossa equipe de especialistas está pronta para ajudar você a implementar soluções de IA que realmente fazem a diferença no seu negócio.
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Mail className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Email</h4>
-                  <p className="text-gray-600">agenciavisionai@gmail.com</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Phone className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Telefone</h4>
-                  <p className="text-gray-600">(19) 99941-7233</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <MapPin className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Localização</h4>
-                  <p className="text-gray-600">Ipeúna, SP - Brasil</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6">
-              <h4 className="font-bold text-gray-900 mb-3">
-                Resposta Rápida Garantida
-              </h4>
-              <p className="text-gray-600">
-                Respondemos todas as mensagens em até 2 horas durante horário comercial. 
-                Para projetos urgentes, oferecemos atendimento prioritário.
-              </p>
-            </div>
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Fale Conosco
+            </h2>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              Nossa equipe de especialistas está pronta para ajudar você a implementar soluções de IA que realmente fazem a diferença no seu negócio.
+            </p>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 mb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -242,6 +188,16 @@ const Contact = () => {
                 <Send className="ml-2 h-5 w-5" />
               </Button>
             </form>
+          </div>
+
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 text-center">
+            <h4 className="font-bold text-gray-900 mb-3">
+              Resposta Rápida Garantida
+            </h4>
+            <p className="text-gray-600">
+              Respondemos todas as mensagens em até 2 horas durante horário comercial. 
+              Para projetos urgentes, oferecemos atendimento prioritário.
+            </p>
           </div>
         </div>
       </div>
