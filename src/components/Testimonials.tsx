@@ -133,16 +133,7 @@ const SophiaExperience = () => {
               </div>
             </div>
             
-            {/* Social Proof */}
-            <div className="mt-8 flex items-center justify-center space-x-6 text-sm text-gray-600">
-              <div className="flex items-center">
-                <div className="flex -space-x-2 mr-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full border-2 border-white"></div>
-                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-full border-2 border-white"></div>
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full border-2 border-white"></div>
-                </div
-              </div
-            </div>
+
           </div>
         </div>
 
