@@ -156,7 +156,7 @@ const Contact = () => {
                     value={formData.phone} 
                     onChange={handleChange} 
                     className="bg-white" 
-                    placeholder="(11) 99999-9999" 
+                    placeholder="55(11) 99999-9999" 
                     disabled={isSubmitting}
                   />
                 </div>
