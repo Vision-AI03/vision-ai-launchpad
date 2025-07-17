@@ -223,7 +223,7 @@ const Contact = () => {
                     onKeyDown={handlePhoneKeyDown}
                     onFocus={handlePhoneFocus}
                     className="bg-white" 
-                    placeholder="55 (11) 99999-9999" 
+                    placeholder="(99) 99999-9999" 
                     disabled={isSubmitting}
                     maxLength={16}
                   />
@@ -294,18 +294,6 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-
-            <div className="text-center md:text-left">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Horário de Atendimento
-              </h3>
-              <div className="space-y-2 text-gray-600">
-                <p>Segunda a Sexta: 9h às 18h</p>
-                <p>Sábado: 9h às 14h</p>
-                <p>Domingo: Fechado</p>
-              </div>
-              <p className="text-sm text-gray-500 mt-4">
-                Responderemos sua mensagem em até 24 horas úteis.
               </p>
             </div>
           </div>
