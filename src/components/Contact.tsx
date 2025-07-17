@@ -10,7 +10,7 @@ const Contact = () => {
     name: "",
     email: "",
     company: "",
-    phone: "",
+    phone: "55",
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,7 +52,7 @@ const Contact = () => {
           name: "",
           email: "",
           company: "",
-          phone: "",
+          phone: "55",
           message: ""
         });
       } else {
@@ -76,6 +76,71 @@ const Contact = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    
+    // Remove tudo que não é número
+    value = value.replace(/\D/g, '');
+    
+    // Garante que sempre comece com 55
+    if (!value.startsWith('55')) {
+      value = '55' + value.replace(/^55/, '');
+    }
+    
+    // Limita a 13 dígitos (55 + 11 dígitos do número brasileiro)
+    if (value.length > 13) {
+      value = value.slice(0, 13);
+    }
+    
+    // Aplica a máscara: 55 (XX) 9XXXX-XXXX
+    let formattedValue = value;
+    if (value.length > 2) {
+      formattedValue = '55';
+      if (value.length > 4) {
+        formattedValue += ' (' + value.slice(2, 4);
+        if (value.length > 6) {
+          formattedValue += ') ' + value.slice(4, 5);
+          if (value.length > 9) {
+            formattedValue += value.slice(5, 9) + '-' + value.slice(9);
+          } else {
+            formattedValue += value.slice(5);
+          }
+        } else {
+          formattedValue += value.slice(4);
+        }
+      } else {
+        formattedValue += value.slice(2);
+      }
+    }
+    
+    setFormData({
+      ...formData,
+      phone: formattedValue
+    });
+  };
+
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Impede que o usuário apague o "55"
+    if ((e.key === 'Backspace' || e.key === 'Delete') && formData.phone.length <= 2) {
+      e.preventDefault();
+    }
+    
+    // Impede que o cursor se mova para antes do "55"
+    const input = e.target as HTMLInputElement;
+    if (input.selectionStart && input.selectionStart < 2) {
+      setTimeout(() => {
+        input.setSelectionRange(2, 2);
+      }, 0);
+    }
+  };
+
+  const handlePhoneFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Posiciona o cursor após o "55"
+    setTimeout(() => {
+      e.target.setSelectionRange(2, 2);
+    }, 0);
   };
 
   return (
@@ -154,10 +219,13 @@ const Contact = () => {
                     id="phone" 
                     name="phone" 
                     value={formData.phone} 
-                    onChange={handleChange} 
+                    onChange={handlePhoneChange}
+                    onKeyDown={handlePhoneKeyDown}
+                    onFocus={handlePhoneFocus}
                     className="bg-white" 
-                    placeholder="55(11) 99999-9999" 
+                    placeholder="55 (11) 99999-9999" 
                     disabled={isSubmitting}
+                    maxLength={16}
                   />
                 </div>
               </div>
@@ -172,32 +240,74 @@ const Contact = () => {
                   value={formData.message} 
                   onChange={handleChange} 
                   required 
-                  rows={5} 
-                  className="bg-white" 
-                  placeholder="Conte-nos sobre seu projeto e como podemos ajudar..." 
+                  className="bg-white min-h-[120px]" 
+                  placeholder="Conte-nos sobre seu projeto e como podemos ajudar..."
                   disabled={isSubmitting}
                 />
               </div>
 
               <Button 
                 type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
-                <Send className="ml-2 h-5 w-5" />
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Enviar Mensagem
+                  </>
+                )}
               </Button>
             </form>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 text-center">
-            <h4 className="font-bold text-gray-900 mb-3">
-              Resposta Rápida Garantida
-            </h4>
-            <p className="text-gray-600">
-              Respondemos todas as mensagens em até 2 horas durante horário comercial. 
-              Para projetos urgentes, oferecemos atendimento prioritário.
-            </p>
+          {/* Contact Info */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="text-center md:text-left">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Vamos Conversar
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Estamos aqui para ajudar você a transformar seu negócio com inteligência artificial. Entre em contato e vamos começar essa jornada juntos.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-center md:justify-start gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-700">+55 (11) 99999-9999</span>
+                </div>
+                <div className="flex items-center justify-center md:justify-start gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-700">contato@agenciavisionai.com</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center md:text-left">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Horário de Atendimento
+              </h3>
+              <div className="space-y-2 text-gray-600">
+                <p>Segunda a Sexta: 9h às 18h</p>
+                <p>Sábado: 9h às 14h</p>
+                <p>Domingo: Fechado</p>
+              </div>
+              <p className="text-sm text-gray-500 mt-4">
+                Responderemos sua mensagem em até 24 horas úteis.
+              </p>
+            </div>
           </div>
         </div>
       </div>
