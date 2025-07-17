@@ -10,7 +10,7 @@ const Contact = () => {
     name: "",
     email: "",
     company: "",
-    phone: "55",
+    phone: "",
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,7 +52,7 @@ const Contact = () => {
           name: "",
           email: "",
           company: "",
-          phone: "55",
+          phone: "",
           message: ""
         });
       } else {
@@ -83,6 +83,11 @@ const Contact = () => {
     
     // Remove tudo que não é número
     value = value.replace(/\D/g, '');
+    
+    // Se o campo estiver vazio, adiciona o 55
+    if (value === '') {
+      value = '55';
+    }
     
     // Garante que sempre comece com 55
     if (!value.startsWith('55')) {
@@ -122,24 +127,25 @@ const Contact = () => {
   };
 
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Impede que o usuário apague o "55"
+    // Impede que o usuário apague o "55" quando há mais de 2 caracteres
     if ((e.key === 'Backspace' || e.key === 'Delete') && formData.phone.length <= 2) {
       e.preventDefault();
-    }
-    
-    // Impede que o cursor se mova para antes do "55"
-    const input = e.target as HTMLInputElement;
-    if (input.selectionStart && input.selectionStart < 2) {
-      setTimeout(() => {
-        input.setSelectionRange(2, 2);
-      }, 0);
     }
   };
 
   const handlePhoneFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Se o campo estiver vazio, adiciona o 55
+    if (formData.phone === '') {
+      setFormData({
+        ...formData,
+        phone: '55'
+      });
+    }
+    
     // Posiciona o cursor após o "55"
     setTimeout(() => {
-      e.target.setSelectionRange(2, 2);
+      const cursorPos = formData.phone.length > 0 ? formData.phone.length : 2;
+      e.target.setSelectionRange(cursorPos, cursorPos);
     }, 0);
   };
 
