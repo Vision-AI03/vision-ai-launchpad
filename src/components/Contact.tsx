@@ -104,9 +104,9 @@ const Contact = () => {
     if (value.length > 2) {
       formattedValue = '55';
       if (value.length > 4) {
-        formattedValue += ' (' + value.slice(2, 4);
+        formattedValue += ' ' + value.slice(2, 4);
         if (value.length > 6) {
-          formattedValue += ') ' + value.slice(4, 5);
+          formattedValue += ' ' + value.slice(4, 5);
           if (value.length > 9) {
             formattedValue += value.slice(5, 9) + '-' + value.slice(9);
           } else {
