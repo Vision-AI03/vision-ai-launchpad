@@ -99,7 +99,7 @@ const Contact = () => {
       value = value.slice(0, 13);
     }
     
-    // Aplica a máscara: 55 (XX) 9XXXX-XXXX
+    // Aplica a máscara: 55 XX 9XXXX-XXXX
     let formattedValue = value;
     if (value.length > 2) {
       formattedValue = '55';
