@@ -38,10 +38,12 @@ const Hero = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [sessionId] = useState(() => `session_${userId}`);
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   
+  // URL do seu webhook
   const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
   
   useEffect(() => {
@@ -74,29 +76,44 @@ const Hero = () => {
     setIsLoading(true);
     
     try {
+      const requestBody = {
+        message: message.trim(),
+        messageType: 'text',
+        userId: userId,
+        sessionId: sessionId,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('📤 Enviando mensagem:', requestBody);
+      
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          message: message,
-          messageType: 'text',
-          userId: userId,
-          sessionId: `session_${userId}`,
-          timestamp: new Date().toISOString()
-        })
+        body: JSON.stringify(requestBody)
       });
       
+      console.log('📡 Status da resposta:', response.status);
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('📥 Resposta recebida:', data);
+      
+      // Extrai a resposta do AI Agent de diferentes possíveis formatos
+      let botResponseText = data.response || 
+                           data.message || 
+                           data.output || 
+                           data.text ||
+                           "Desculpe, não consegui processar sua mensagem.";
       
       const botMessage = {
         id: Date.now() + 1,
-        text: data.response || "Desculpe, não consegui processar sua mensagem. Tente novamente.",
+        text: botResponseText,
         isBot: true,
         timestamp: new Date()
       };
@@ -104,11 +121,11 @@ const Hero = () => {
       setMessages(prev => [...prev, botMessage]);
       
     } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
+      console.error('❌ Erro ao enviar mensagem:', error);
       
       const errorMessage = {
         id: Date.now() + 1,
-        text: "Ops! Parece que estou com dificuldades técnicas no momento. Tente novamente em alguns instantes ou entre em contato conosco diretamente.",
+        text: "Ops! Estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes ou entre em contato conosco diretamente.",
         isBot: true,
         timestamp: new Date()
       };
@@ -116,12 +133,25 @@ const Hero = () => {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      // Foca novamente no input após enviar
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
     }
   };
   
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     sendMessage(inputMessage);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
   
   const formatTime = (timestamp) => {
@@ -211,7 +241,7 @@ const Hero = () => {
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex items-start gap-3 ${message.isBot ? '' : 'justify-end'}`}
+                      className={`flex items-start gap-3 animate-in slide-in-from-bottom-2 duration-300 ${message.isBot ? '' : 'justify-end'}`}
                     >
                       {message.isBot && (
                         <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -227,7 +257,7 @@ const Hero = () => {
                               : 'bg-blue-600 text-white'
                           }`}
                         >
-                          <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                          <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
                         </div>
                         <p className={`text-xs mt-1 ${message.isBot ? 'text-gray-500' : 'text-gray-400 text-right'}`}>
                           {formatTime(message.timestamp)}
@@ -243,15 +273,15 @@ const Hero = () => {
                   ))}
                   
                   {isLoading && (
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 animate-in slide-in-from-bottom-2 duration-300">
                       <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                         <Bot className="h-4 w-4 text-white" />
                       </div>
                       <div className="bg-white border shadow-sm rounded-lg p-3">
                         <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
                       </div>
                     </div>
@@ -269,21 +299,25 @@ const Hero = () => {
                         value={inputMessage}
                         onChange={(e) => setInputMessage(e.target.value)}
                         placeholder="Digite sua mensagem..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                         disabled={isLoading}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
+                        onKeyPress={handleKeyPress}
+                        maxLength={500}
                       />
                     </div>
                     
-                    {/* Send Button */}
                     <button
                       type="button"
                       onClick={handleSubmit}
                       disabled={!inputMessage.trim() || isLoading}
-                      className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white p-2 rounded-full transition-colors"
+                      className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-full transition-colors flex items-center justify-center min-w-[48px]"
                     >
                       <Send className="h-5 w-5" />
                     </button>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500 mt-2 text-center">
+                    Pressione Enter para enviar • Máx. 500 caracteres
                   </div>
                 </div>
               </div>
@@ -291,7 +325,7 @@ const Hero = () => {
             
             {/* Floating Action Text */}
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
+              <div className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MessageCircle className="h-4 w-4" />
                   Converse com a Sophia!
