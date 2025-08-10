@@ -42,7 +42,7 @@ const Hero = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   
-  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook-test/chat-sophia";
+  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
   
   useEffect(() => {
     scrollToBottom();
