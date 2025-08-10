@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Bot, Zap, Send, Mic, MicOff, Volume2 } from "lucide-react";
+import { ArrowRight, Bot, Zap, Send, MessageCircle } from "lucide-react";
 
 const Button = ({ children, className = "", size = "default", variant = "default", onClick, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
@@ -37,10 +37,6 @@ const Hero = () => {
   
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [audioChunks, setAudioChunks] = useState([]);
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   
   const messagesEndRef = useRef(null);
@@ -63,12 +59,12 @@ const Hero = () => {
     }
   };
   
-  const sendMessage = async (message, audioBlob = null) => {
-    if ((!message.trim() && !audioBlob) || isLoading) return;
+  const sendMessage = async (message) => {
+    if (!message.trim() || isLoading) return;
     
     const userMessage = {
       id: Date.now(),
-      text: audioBlob ? "🎤 Mensagem de áudio" : message,
+      text: message,
       isBot: false,
       timestamp: new Date()
     };
@@ -78,23 +74,18 @@ const Hero = () => {
     setIsLoading(true);
     
     try {
-      const formData = new FormData();
-      
-      if (audioBlob) {
-        formData.append('audio', audioBlob, 'voice_message.webm');
-        formData.append('messageType', 'audio');
-      } else {
-        formData.append('message', message);
-        formData.append('messageType', 'text');
-      }
-      
-      formData.append('userId', userId);
-      formData.append('sessionId', `session_${userId}`);
-      formData.append('timestamp', new Date().toISOString());
-      
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message,
+          messageType: 'text',
+          userId: userId,
+          sessionId: `session_${userId}`,
+          timestamp: new Date().toISOString()
+        })
       });
       
       if (!response.ok) {
@@ -131,48 +122,6 @@ const Hero = () => {
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     sendMessage(inputMessage);
-  };
-  
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setAudioChunks(prev => [...prev, event.data]);
-        }
-      };
-      
-      recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        sendMessage("", audioBlob);
-        setAudioChunks([]);
-        
-        // Stop all tracks
-        stream.getTracks().forEach(track => track.stop());
-      };
-      
-      setMediaRecorder(recorder);
-      recorder.start();
-      setIsRecording(true);
-      
-    } catch (error) {
-      console.error('Erro ao acessar microfone:', error);
-      alert('Não foi possível acessar o microfone. Verifique as permissões do navegador.');
-    }
-  };
-  
-  const stopRecording = () => {
-    if (mediaRecorder && isRecording) {
-      mediaRecorder.stop();
-      setIsRecording(false);
-      setMediaRecorder(null);
-    }
-  };
-  
-  const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
   };
   
   const formatTime = (timestamp) => {
@@ -278,7 +227,7 @@ const Hero = () => {
                               : 'bg-blue-600 text-white'
                           }`}
                         >
-                          <p className="text-sm">{message.text}</p>
+                          <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                         </div>
                         <p className={`text-xs mt-1 ${message.isBot ? 'text-gray-500' : 'text-gray-400 text-right'}`}>
                           {formatTime(message.timestamp)}
@@ -320,25 +269,11 @@ const Hero = () => {
                         value={inputMessage}
                         onChange={(e) => setInputMessage(e.target.value)}
                         placeholder="Digite sua mensagem..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 pr-12"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
                         disabled={isLoading}
                         onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
                       />
                     </div>
-                    
-                    {/* Audio Button */}
-                    <button
-                      type="button"
-                      onClick={isRecording ? stopRecording : startRecording}
-                      className={`p-2 rounded-full transition-colors ${
-                        isRecording 
-                          ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-                      }`}
-                      disabled={isLoading}
-                    >
-                      {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                    </button>
                     
                     {/* Send Button */}
                     <button
@@ -350,15 +285,6 @@ const Hero = () => {
                       <Send className="h-5 w-5" />
                     </button>
                   </div>
-                  
-                  {isRecording && (
-                    <div className="mt-2 text-center">
-                      <p className="text-sm text-red-600 flex items-center justify-center gap-2">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        Gravando... Clique no microfone novamente para enviar
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -367,8 +293,8 @@ const Hero = () => {
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
               <div className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
                 <p className="text-sm font-medium flex items-center gap-2">
-                  <Volume2 className="h-4 w-4" />
-                  Chat funcional com áudio!
+                  <MessageCircle className="h-4 w-4" />
+                  Converse com a Sophia!
                 </p>
               </div>
             </div>
