@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Bot, Zap, Send, MessageCircle } from "lucide-react";
+import { ArrowRight, Bot, Zap, Send, MessageCircle, AlertCircle } from "lucide-react";
 
 const Button = ({ children, className = "", size = "default", variant = "default", onClick, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
@@ -37,6 +37,7 @@ const Hero = () => {
   
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('online'); // online, offline, error
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [sessionId] = useState(() => `session_${userId}`);
   
@@ -61,6 +62,40 @@ const Hero = () => {
     }
   };
   
+  // Função para extrair a resposta do bot de forma mais robusta
+  const extractBotResponse = (data) => {
+    console.log('🔍 Dados recebidos completos:', JSON.stringify(data, null, 2));
+    
+    // Possíveis caminhos onde a resposta pode estar
+    const possiblePaths = [
+      data?.message,           // Resposta direta
+      data?.response,          // Resposta do AI Agent
+      data?.output,           // Output do processo
+      data?.text,             // Texto simples
+      data?.data?.message,    // Resposta aninhada
+      data?.data?.response,   // Resposta aninhada do AI Agent
+      data?.result?.message,  // Resultado do processo
+      data?.body?.message,    // Corpo da resposta
+    ];
+    
+    // Procura a primeira resposta válida
+    for (const path of possiblePaths) {
+      if (typeof path === 'string' && path.trim().length > 0) {
+        console.log('✅ Resposta encontrada em:', path);
+        return path.trim();
+      }
+    }
+    
+    // Se não encontrar nada, tenta converter o objeto completo
+    if (typeof data === 'object' && data !== null) {
+      console.log('⚠️ Nenhuma resposta padrão encontrada, usando fallback');
+      return "Recebi sua mensagem, mas houve um problema na formatação da resposta. Por favor, tente novamente.";
+    }
+    
+    console.log('❌ Nenhuma resposta válida encontrada');
+    return "Desculpe, não consegui processar sua mensagem no momento.";
+  };
+  
   const sendMessage = async (message) => {
     if (!message.trim() || isLoading) return;
     
@@ -74,6 +109,7 @@ const Hero = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
+    setConnectionStatus('online');
     
     try {
       const requestBody = {
@@ -86,30 +122,43 @@ const Hero = () => {
 
       console.log('📤 Enviando mensagem:', requestBody);
       
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
+        signal: controller.signal
       });
       
+      clearTimeout(timeoutId);
       console.log('📡 Status da resposta:', response.status);
+      console.log('📡 Headers da resposta:', response.headers);
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('❌ Corpo do erro:', errorText);
         throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
       }
       
-      const data = await response.json();
-      console.log('📥 Resposta recebida:', data);
+      const responseText = await response.text();
+      console.log('📥 Resposta bruta:', responseText);
       
-      // Extrai a resposta do AI Agent de diferentes possíveis formatos
-      let botResponseText = data.response || 
-                           data.message || 
-                           data.output || 
-                           data.text ||
-                           "Desculpe, não consegui processar sua mensagem.";
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.log('⚠️ Erro ao fazer parse do JSON, usando resposta como texto');
+        data = { message: responseText };
+      }
+      
+      console.log('📥 Dados processados:', data);
+      
+      const botResponseText = extractBotResponse(data);
       
       const botMessage = {
         id: Date.now() + 1,
@@ -119,18 +168,32 @@ const Hero = () => {
       };
       
       setMessages(prev => [...prev, botMessage]);
+      setConnectionStatus('online');
       
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
       
-      const errorMessage = {
+      let errorMessage;
+      
+      if (error.name === 'AbortError') {
+        errorMessage = "A requisição demorou muito para responder. Por favor, tente novamente.";
+        setConnectionStatus('error');
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        errorMessage = "Problema de conexão. Verifique sua internet e tente novamente.";
+        setConnectionStatus('offline');
+      } else {
+        errorMessage = "Ops! Estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.";
+        setConnectionStatus('error');
+      }
+      
+      const errorMsg = {
         id: Date.now() + 1,
-        text: "Ops! Estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes ou entre em contato conosco diretamente.",
+        text: errorMessage,
         isBot: true,
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
       // Foca novamente no input após enviar
@@ -159,6 +222,24 @@ const Hero = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getStatusColor = () => {
+    switch (connectionStatus) {
+      case 'online': return 'bg-green-400';
+      case 'offline': return 'bg-yellow-400';
+      case 'error': return 'bg-red-400';
+      default: return 'bg-green-400';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (connectionStatus) {
+      case 'online': return 'Online';
+      case 'offline': return 'Conexão instável';
+      case 'error': return 'Erro de conexão';
+      default: return 'Online';
+    }
   };
 
   return (
@@ -232,7 +313,7 @@ const Hero = () => {
                       <p className="font-medium text-sm">Sophia</p>
                       <p className="text-xs opacity-90">Consultora de IA</p>
                     </div>
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className={`w-2 h-2 rounded-full ${getStatusColor()} ${connectionStatus === 'online' ? 'animate-pulse' : ''}`} title={getStatusText()}></div>
                   </div>
                 </div>
 
@@ -291,6 +372,13 @@ const Hero = () => {
 
                 {/* Chat Input */}
                 <div className="p-4 bg-white border-t">
+                  {connectionStatus !== 'online' && (
+                    <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-yellow-600" />
+                      <span className="text-sm text-yellow-800">{getStatusText()}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
                       <input
