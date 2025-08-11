@@ -45,7 +45,7 @@ const Hero = () => {
   const inputRef = useRef(null);
   
   // URL do seu webhook
-  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
+  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook-test/chat-sophia";
   
   useEffect(() => {
     scrollToBottom();
