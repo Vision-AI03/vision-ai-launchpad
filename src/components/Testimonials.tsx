@@ -1,36 +1,45 @@
-import { MessageCircle, Sparkles, Clock, Shield, Bot, ArrowRight, CheckCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, HelpCircle, Bot, Sparkles, Users, Code, Globe, BarChart } from "lucide-react";
+import { useState } from "react";
 
-const SophiaExperience = () => {
-  const features = [
+const FAQAgentesIA = () => {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const faqData = [
     {
-      icon: <Bot className="h-6 w-6" />,
-      title: "Respostas Humanizadas",
-      description: "Conversas naturais e inteligentes como se fosse uma pessoa real"
+      question: "Posso substituir totalmente minha equipe de vendas e atendimento por Agentes IA?",
+      answer: "Embora seja possível, recomendamos usar a IA para otimizar seus atendimentos e vendas, sem substituir totalmente a equipe humana. O equilíbrio entre agentes IA e humanos geralmente oferece os melhores resultados. A IA cuida das consultas iniciais, qualificação de leads e atendimento 24/7, enquanto humanos focam em negociações complexas e relacionamentos estratégicos.",
+      icon: <Users className="h-5 w-5" />
     },
     {
-      icon: <Clock className="h-6 w-6" />,
-      title: "Disponível 24/7",
-      description: "Sophia está sempre pronta para atender, sem horário comercial"
+      question: "É fácil treinar um Agente IA?",
+      answer: "Sim! Nossos agentes IA são projetados para serem facilmente treinados. Você pode configurar respostas, definir fluxos de conversação e personalizar o comportamento através de uma interface intuitiva. Não é necessário conhecimento técnico avançado - nossa equipe oferece suporte completo durante todo o processo de implementação.",
+      icon: <Bot className="h-5 w-5" />
     },
     {
-      icon: <Shield className="h-6 w-6" />,
-      title: "Especialista em IA",
-      description: "Conhece todas as soluções Vision AI para tirar suas dúvidas"
+      question: "Vocês podem me ajudar a treinar os Agentes IA e configurar outros recursos?",
+      answer: "Claro! Oferecemos suporte técnico e comercial integrado. Nossa equipe especializada ajuda no treinamento personalizado dos agentes, configuração de fluxos automatizados, integração com seus sistemas existentes e otimização contínua para melhor performance. Você não fica sozinho nesse processo.",
+      icon: <Code className="h-5 w-5" />
     },
     {
-      icon: <Sparkles className="h-6 w-6" />,
-      title: "Experiência Personalizada",
-      description: "Atendimento focado nas necessidades específicas do seu negócio"
+      question: "Preciso de conhecimentos técnicos ou de programação?",
+      answer: "Não é necessário! Desenvolvemos nossas soluções pensando na simplicidade. A interface é visual e intuitiva, permitindo que você configure e gerencie seus agentes IA sem conhecimento de programação. Para customizações mais avançadas, nossa equipe técnica está disponível para apoiar.",
+      icon: <Sparkles className="h-5 w-5" />
+    },
+    {
+      question: "Nossas vendas são complexas, o Agente IA conseguirá aprender?",
+      answer: "Sim! Nossos agentes IA são desenvolvidos para lidar com vendas complexas e processos específicos de cada negócio. Eles aprendem com cada interação e podem ser treinados com cenários específicos do seu setor. Para situações muito complexas, o agente pode transferir automaticamente para um especialista humano.",
+      icon: <BarChart className="h-5 w-5" />
+    },
+    {
+      question: "Posso atender clientes em inglês e outras línguas com IA?",
+      answer: "Perfeitamente! Nossos agentes IA suportam múltiplos idiomas, incluindo português, inglês, espanhol e outros. Eles mantêm o contexto e personalidade da marca independente do idioma usado pelo cliente, permitindo expandir seu atendimento globalmente sem barreiras linguísticas.",
+      icon: <Globe className="h-5 w-5" />
     }
   ];
 
-  const benefits = [
-    "Esclarecimento de dúvidas sobre nossas soluções",
-    "Demonstração prática de como funciona um agente IA",
-    "Análise personalizada para seu tipo de negócio",
-    "Informações sobre implementação e resultados",
-    "Suporte técnico e comercial integrado"
-  ];
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
@@ -45,121 +54,87 @@ const SophiaExperience = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Experimente Agora Mesmo
+            <HelpCircle className="h-4 w-4 mr-2" />
+            Perguntas Frequentes
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Conheça a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Sophia</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Dúvidas Frequentes</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Nossa atendente de IA está pronta para mostrar como a tecnologia Vision AI pode transformar seu negócio. 
-            Converse com ela agora e veja a diferença na prática!
+            Esclarecemos as principais questões sobre agentes de IA e automações. 
+            Ainda tem dúvidas? Nossa equipe está pronta para ajudar!
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          {/* Left Side - Features */}
-          <div className="space-y-8">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Por que conversar com a Sophia?
-              </h3>
-              <div className="grid sm:grid-cols-2 gap-6">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
-                      {feature.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">{feature.title}</h4>
-                      <p className="text-gray-600 text-sm">{feature.description}</p>
-                    </div>
+        {/* FAQ Items */}
+        <div className="max-w-4xl mx-auto space-y-4 mb-16">
+          {faqData.map((faq, index) => (
+            <div key={index} className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/30 overflow-hidden transition-all duration-300 hover:shadow-xl">
+              <button
+                onClick={() => toggleFAQ(index)}
+                className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50/50 transition-colors duration-200"
+              >
+                <div className="flex items-center space-x-4 flex-1">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
+                    {faq.icon}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Benefits List */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                O que a Sophia pode fazer por você:
-              </h3>
-              <ul className="space-y-3">
-                {benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Right Side - CTA */}
-          <div className="text-center">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-white/30 relative">
-              {/* Decorative elements */}
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-xl"></div>
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-xl"></div>
-              
-              <div className="relative z-10">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <MessageCircle className="h-12 w-12 text-white" />
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-900 pr-4">
+                    {faq.question}
+                  </h3>
                 </div>
-                
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                  Fale com a Sophia
-                </h3>
-                <p className="text-gray-600 mb-8 text-lg">
-                  Tire suas dúvidas, conheça nossas soluções e veja como um agente de IA realmente funciona. 
-                  É rápido, gratuito e sem compromisso!
-                </p>
-                
-                <a 
-                  href="https://wa.me/message/CPV7YJ34KDD4H1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl group text-lg"
-                >
-                  <MessageCircle className="h-6 w-6 mr-3 group-hover:animate-bounce" />
-                  Conversar no WhatsApp
-                  <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </a>
-                
-                <p className="text-sm text-gray-500 mt-4">
-                  Resposta em segundos • Sem cadastro necessário
-                </p>
-              </div>
+                <div className="flex-shrink-0 ml-4">
+                  {openIndex === index ? (
+                    <ChevronUp className="h-6 w-6 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="h-6 w-6 text-gray-500" />
+                  )}
+                </div>
+              </button>
+              
+              {openIndex === index && (
+                <div className="px-8 pb-6">
+                  <div className="pl-14 pr-4">
+                    <p className="text-gray-700 leading-relaxed text-base">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
-            
-
-          </div>
+          ))}
         </div>
 
-        {/* Bottom Stats */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="space-y-2">
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                &lt;10s
-              </div>
-              <p className="text-gray-600 font-medium">Tempo de Resposta</p>
-              <p className="text-sm text-gray-500">Respostas instantâneas e precisas</p>
+        {/* Bottom CTA */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-white/30 text-center relative">
+          {/* Decorative elements */}
+          <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-xl"></div>
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-xl"></div>
+          
+          <div className="relative z-10">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <HelpCircle className="h-10 w-10 text-white" />
             </div>
-            <div className="space-y-2">
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                95%
-              </div>
-              <p className="text-gray-600 font-medium">Taxa de Resolução</p>
-              <p className="text-sm text-gray-500">Dúvidas esclarecidas na primeira conversa</p>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                24/7
-              </div>
-              <p className="text-gray-600 font-medium">Disponibilidade</p>
-              <p className="text-sm text-gray-500">Sempre online para te atender</p>
+            
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Ainda tem dúvidas?
+            </h3>
+            <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto">
+              Nossa equipe especializada está pronta para esclarecer todas as suas questões 
+              sobre agentes de IA e mostrar como eles podem transformar seu negócio.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a 
+                href="https://api.whatsapp.com/message/UMOFX66X4CY2K1?autoload=1&app_absent=0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-lg"
+              >
+                Falar com Especialista
+              </a>
+              <p className="text-sm text-gray-500">
+                Atendimento personalizado • Consultoria gratuita
+              </p>
             </div>
           </div>
         </div>
@@ -168,4 +143,4 @@ const SophiaExperience = () => {
   );
 };
 
-export default SophiaExperience;
+export default FAQAgentesIA;
