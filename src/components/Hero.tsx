@@ -220,13 +220,26 @@ const Hero = () => {
   };
   
   const handleSubmit = (e) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Previne qualquer scroll da página
+    const currentScrollY = window.scrollY;
+    
     sendMessage(inputMessage);
+    
+    // Mantém a posição de scroll da página
+    setTimeout(() => {
+      window.scrollTo(0, currentScrollY);
+    }, 0);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       handleSubmit();
     }
   };
@@ -461,6 +474,13 @@ const Hero = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
         </div>
       </div>
     </section>
