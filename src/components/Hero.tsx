@@ -37,29 +37,25 @@ const Hero = () => {
   
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('online'); // online, offline, error
+  const [connectionStatus, setConnectionStatus] = useState('online');
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [sessionId] = useState(() => `session_${userId}`);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
   
-  // URL do seu webhook
   const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
   
-  // Controla se deve fazer scroll automático (apenas quando há novas mensagens do bot)
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
-  
   useEffect(() => {
-    if (shouldAutoScroll) {
-      scrollToBottom();
+    if (shouldAutoScroll && chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   }, [messages, shouldAutoScroll]);
-  
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
   
   const scrollToContact = () => {
     const element = document.getElementById('contact');
@@ -68,23 +64,20 @@ const Hero = () => {
     }
   };
   
-  // Função para extrair a resposta do bot de forma mais robusta
   const extractBotResponse = (data) => {
     console.log('🔍 Dados recebidos completos:', JSON.stringify(data, null, 2));
     
-    // Possíveis caminhos onde a resposta pode estar
     const possiblePaths = [
-      data?.message,           // Resposta direta
-      data?.response,          // Resposta do AI Agent
-      data?.output,           // Output do processo
-      data?.text,             // Texto simples
-      data?.data?.message,    // Resposta aninhada
-      data?.data?.response,   // Resposta aninhada do AI Agent
-      data?.result?.message,  // Resultado do processo
-      data?.body?.message,    // Corpo da resposta
+      data?.message,
+      data?.response,
+      data?.output,
+      data?.text,
+      data?.data?.message,
+      data?.data?.response,
+      data?.result?.message,
+      data?.body?.message,
     ];
     
-    // Procura a primeira resposta válida
     for (const path of possiblePaths) {
       if (typeof path === 'string' && path.trim().length > 0) {
         console.log('✅ Resposta encontrada em:', path);
@@ -92,7 +85,6 @@ const Hero = () => {
       }
     }
     
-    // Se não encontrar nada, tenta converter o objeto completo
     if (typeof data === 'object' && data !== null) {
       console.log('⚠️ Nenhuma resposta padrão encontrada, usando fallback');
       return "Recebi sua mensagem, mas houve um problema na formatação da resposta. Por favor, tente novamente.";
@@ -112,13 +104,11 @@ const Hero = () => {
       timestamp: new Date()
     };
     
-    // Desabilita o auto-scroll temporariamente ao enviar mensagem do usuário
-    setShouldAutoScroll(false);
-    
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
     setConnectionStatus('online');
+    setShouldAutoScroll(false);
     
     try {
       const requestBody = {
@@ -132,7 +122,7 @@ const Hero = () => {
       console.log('📤 Enviando mensagem:', requestBody);
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
@@ -146,7 +136,6 @@ const Hero = () => {
       
       clearTimeout(timeoutId);
       console.log('📡 Status da resposta:', response.status);
-      console.log('📡 Headers da resposta:', response.headers);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -179,8 +168,9 @@ const Hero = () => {
       setMessages(prev => [...prev, botMessage]);
       setConnectionStatus('online');
       
-      // Reabilita o auto-scroll apenas para a resposta do bot
-      setShouldAutoScroll(true);
+      setTimeout(() => {
+        setShouldAutoScroll(true);
+      }, 100);
       
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
@@ -206,11 +196,11 @@ const Hero = () => {
       };
       
       setMessages(prev => [...prev, errorMsg]);
-      // Reabilita o auto-scroll para mensagens de erro também
-      setShouldAutoScroll(true);
+      setTimeout(() => {
+        setShouldAutoScroll(true);
+      }, 100);
     } finally {
       setIsLoading(false);
-      // Foca novamente no input após enviar
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
@@ -225,12 +215,9 @@ const Hero = () => {
       e.stopPropagation();
     }
     
-    // Previne qualquer scroll da página
     const currentScrollY = window.scrollY;
-    
     sendMessage(inputMessage);
     
-    // Mantém a posição de scroll da página
     setTimeout(() => {
       window.scrollTo(0, currentScrollY);
     }, 0);
@@ -268,18 +255,6 @@ const Hero = () => {
       default: return 'Online';
     }
   };
-
-  // Sugestões para o texto do botão piscante
-  const buttonTexts = [
-    "Tire suas dúvidas sobre nossas soluções",
-    "Conheça nossos serviços de IA",
-    "Descubra como podemos ajudar",
-    "Saiba mais sobre automações",
-    "Fale conosco agora mesmo"
-  ];
-
-  // Escolhe um texto aleatório ou pode ser fixo
-  const selectedButtonText = buttonTexts[0]; // ou use buttonTexts[Math.floor(Math.random() * buttonTexts.length)] para aleatório
 
   return (
     <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -333,11 +308,9 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Chat Interactive */}
           <div className="relative">
             <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl p-8 shadow-2xl">
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                {/* Chat Header */}
                 <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -359,12 +332,10 @@ const Hero = () => {
                   </div>
                 </div>
 
-                {/* Chat Messages */}
                 <div 
                   ref={chatContainerRef}
                   className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50"
                   onScroll={() => {
-                    // Permite que o usuário role manualmente sem interferir no auto-scroll
                     const container = chatContainerRef.current;
                     if (container) {
                       const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
@@ -423,7 +394,6 @@ const Hero = () => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Chat Input */}
                 <div className="p-4 bg-white border-t">
                   {connectionStatus !== 'online' && (
                     <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2">
@@ -464,23 +434,15 @@ const Hero = () => {
               </div>
             </div>
             
-            {/* Floating Action Text */}
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
               <div className="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg animate-pulse">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MessageCircle className="h-4 w-4" />
-                  {selectedButtonText}
+                  Tire suas dúvidas sobre nossas soluções
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default Hero;
         </div>
       </div>
     </section>
