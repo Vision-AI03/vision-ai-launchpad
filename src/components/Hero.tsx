@@ -43,13 +43,19 @@ const Hero = () => {
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const chatContainerRef = useRef(null);
   
   // URL do seu webhook
   const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
   
+  // Controla se deve fazer scroll automático (apenas quando há novas mensagens do bot)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (shouldAutoScroll) {
+      scrollToBottom();
+    }
+  }, [messages, shouldAutoScroll]);
   
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -105,6 +111,9 @@ const Hero = () => {
       isBot: false,
       timestamp: new Date()
     };
+    
+    // Desabilita o auto-scroll temporariamente ao enviar mensagem do usuário
+    setShouldAutoScroll(false);
     
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
@@ -170,6 +179,9 @@ const Hero = () => {
       setMessages(prev => [...prev, botMessage]);
       setConnectionStatus('online');
       
+      // Reabilita o auto-scroll apenas para a resposta do bot
+      setShouldAutoScroll(true);
+      
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
       
@@ -194,6 +206,8 @@ const Hero = () => {
       };
       
       setMessages(prev => [...prev, errorMsg]);
+      // Reabilita o auto-scroll para mensagens de erro também
+      setShouldAutoScroll(true);
     } finally {
       setIsLoading(false);
       // Foca novamente no input após enviar
@@ -241,6 +255,18 @@ const Hero = () => {
       default: return 'Online';
     }
   };
+
+  // Sugestões para o texto do botão piscante
+  const buttonTexts = [
+    "Tire suas dúvidas sobre nossas soluções",
+    "Conheça nossos serviços de IA",
+    "Descubra como podemos ajudar",
+    "Saiba mais sobre automações",
+    "Fale conosco agora mesmo"
+  ];
+
+  // Escolhe um texto aleatório ou pode ser fixo
+  const selectedButtonText = buttonTexts[0]; // ou use buttonTexts[Math.floor(Math.random() * buttonTexts.length)] para aleatório
 
   return (
     <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -311,14 +337,28 @@ const Hero = () => {
                     </div>
                     <div>
                       <p className="font-medium text-sm">Sophia</p>
-                      <p className="text-xs opacity-90">Consultora de IA</p>
+                      <p className="text-xs opacity-90">Consultora da Vision AI</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor()} ${connectionStatus === 'online' ? 'animate-pulse' : ''}`}></div>
+                        <span className="text-xs opacity-75">Online</span>
+                      </div>
                     </div>
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor()} ${connectionStatus === 'online' ? 'animate-pulse' : ''}`} title={getStatusText()}></div>
                   </div>
                 </div>
 
                 {/* Chat Messages */}
-                <div className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                <div 
+                  ref={chatContainerRef}
+                  className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50"
+                  onScroll={() => {
+                    // Permite que o usuário role manualmente sem interferir no auto-scroll
+                    const container = chatContainerRef.current;
+                    if (container) {
+                      const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
+                      setShouldAutoScroll(isAtBottom);
+                    }
+                  }}
+                >
                   {messages.map((message) => (
                     <div
                       key={message.id}
@@ -413,10 +453,10 @@ const Hero = () => {
             
             {/* Floating Action Text */}
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+              <div className="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg animate-pulse">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MessageCircle className="h-4 w-4" />
-                  Converse com a Sophia!
+                  {selectedButtonText}
                 </p>
               </div>
             </div>
