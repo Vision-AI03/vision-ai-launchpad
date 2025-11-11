@@ -20,27 +20,42 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Preparar o payload
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      company: formData.company,
+      phone: formData.phone,
+      message: formData.message,
+      timestamp: new Date().toISOString(),
+      source: "Vision AI Website"
+    };
+
+    console.log("=== TENTANDO ENVIAR ===");
+    console.log("URL:", "https://n8n.agenciavisionai.com/webhook/chat-sophia");
+    console.log("Payload:", payload);
+
     try {
-      // Enviar dados para o n8n webhook
       const response = await fetch("https://n8n.agenciavisionai.com/webhook/chat-sophia", {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          phone: formData.phone,
-          message: formData.message,
-          timestamp: new Date().toISOString(),
-          source: "Vision AI Website"
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log("=== RESPOSTA RECEBIDA ===");
+      console.log("Status:", response.status);
+      console.log("Status Text:", response.statusText);
+      console.log("Headers:", response.headers);
+
+      // Tentar ler o corpo da resposta
+      const responseText = await response.text();
+      console.log("Response Body:", responseText);
+
       if (response.ok) {
-        console.log("Dados enviados com sucesso para n8n:", formData);
+        console.log("✅ Sucesso! Dados enviados para n8n");
         
         toast({
           title: "Mensagem enviada!",
@@ -56,18 +71,22 @@ const Contact = () => {
           message: ""
         });
       } else {
-        throw new Error(`Erro na resposta: ${response.status}`);
+        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
       }
 
     } catch (error) {
-      console.error("Erro ao enviar dados:", error);
+      console.error("=== ERRO AO ENVIAR ===");
+      console.error("Tipo do erro:", error);
+      console.error("Mensagem:", error instanceof Error ? error.message : String(error));
+      
       toast({
         title: "Erro ao enviar",
-        description: "Houve um problema ao enviar seus dados. Tente novamente.",
+        description: error instanceof Error ? error.message : "Houve um problema ao enviar seus dados. Tente novamente.",
         variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
+      console.log("=== FIM DA REQUISIÇÃO ===");
     }
   };
 
