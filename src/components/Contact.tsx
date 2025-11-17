@@ -32,11 +32,11 @@ const Contact = () => {
     };
 
     console.log("=== TENTANDO ENVIAR ===");
-    console.log("URL:", "https://n8n.agenciavisionai.com/webhook/vision-site");
+    console.log("URL:", "https://n8n.agenciavisionai.com/webhook/chat-sophia");
     console.log("Payload:", payload);
 
     try {
-      const response = await fetch("https://n8n.agenciavisionai.com/webhook/vision-site", {
+      const response = await fetch(https://n8n.agenciavisionai.com/webhook/chat-sophia", {
         method: "POST",
         mode: "cors",
         headers: {
