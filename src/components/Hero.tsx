@@ -46,7 +46,7 @@ const Hero = () => {
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
   
-  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
+  const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook-test/chat-sophia";
   
   useEffect(() => {
     if (shouldAutoScroll && chatContainerRef.current) {
