@@ -93,7 +93,7 @@ const Hero = () => {
   
   // ✅ FUNÇÃO AVANÇADA: Delay baseado no tamanho da mensagem
 const addMessagesWithDelay = async (messagesArray) => {
-  const MIN_DELAY = 2000; // Mínimo 2 segundos
+  const MIN_DELAY = 5000; // Mínimo 5 segundos
   const CHARS_PER_SECOND = 40; // Velocidade de "digitação"
   
   for (let i = 0; i < messagesArray.length; i++) {
