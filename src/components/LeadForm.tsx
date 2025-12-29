@@ -24,7 +24,7 @@ const LeadForm = () => {
     try {
       console.log("Dados sendo enviados:", formData);
 
-      const response = await fetch("https://n8n.agenciavisionai.com/webhook/chat-sophia", {
+      const response = await fetch("https://n8n.agenciavisionai.com/webhook/lead-form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
