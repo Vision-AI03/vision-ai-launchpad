@@ -91,36 +91,41 @@ const Hero = () => {
     return ["Desculpe, não consegui processar sua mensagem no momento."];
   };
   
-  // ✅ FUNÇÃO NOVA: Adicionar mensagens com delay (simulando digitação)
-  const addMessagesWithDelay = async (messagesArray) => {
-    const DELAY_BETWEEN_MESSAGES = 1200; // 1.2 segundos entre cada mensagem
-    
-    for (let i = 0; i < messagesArray.length; i++) {
-      // Aguardar antes de mostrar a próxima mensagem (exceto a primeira)
-      if (i > 0) {
-        await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_MESSAGES));
-      }
+  // ✅ FUNÇÃO AVANÇADA: Delay baseado no tamanho da mensagem
+const addMessagesWithDelay = async (messagesArray) => {
+  const MIN_DELAY = 2000; // Mínimo 2 segundos
+  const CHARS_PER_SECOND = 40; // Velocidade de "digitação"
+  
+  for (let i = 0; i < messagesArray.length; i++) {
+    // Aguardar antes de mostrar a próxima mensagem (exceto a primeira)
+    if (i > 0) {
+      // Calcular delay baseado no tamanho da mensagem anterior
+      const previousMessageLength = messagesArray[i - 1].length;
+      const calculatedDelay = Math.max(MIN_DELAY, (previousMessageLength / CHARS_PER_SECOND) * 1000);
       
-      const botMessage = {
-        id: Date.now() + i,
-        text: messagesArray[i],
-        isBot: true,
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, botMessage]);
-      
-      // Forçar scroll para a última mensagem
-      setTimeout(() => {
-        if (chatContainerRef.current) {
-          chatContainerRef.current.scrollTo({
-            top: chatContainerRef.current.scrollHeight,
-            behavior: 'smooth'
-          });
-        }
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, calculatedDelay));
     }
-  };
+    
+    const botMessage = {
+      id: Date.now() + i,
+      text: messagesArray[i],
+      isBot: true,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, botMessage]);
+    
+    // Forçar scroll para a última mensagem
+    setTimeout(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTo({
+          top: chatContainerRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  }
+};
   
   const sendMessage = async (message) => {
     if (!message.trim() || isLoading) return;
