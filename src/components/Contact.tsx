@@ -36,7 +36,7 @@ const Contact = () => {
     console.log("Payload:", payload);
 
     try {
-      const response = await fetch(https://n8n.agenciavisionai.com/webhook/chat-sophia", {
+      const response = await fetch(https://n8n.agenciavisionai.com/webhook/contact-form", {
         method: "POST",
         mode: "cors",
         headers: {
