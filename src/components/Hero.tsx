@@ -46,6 +46,7 @@ const Hero = () => {
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
   
+  // ⚠️ ALTERE ESTA URL PARA SEU WEBHOOK
   const WEBHOOK_URL = "https://n8n.agenciavisionai.com/webhook/chat-sophia";
   
   useEffect(() => {
@@ -64,34 +65,61 @@ const Hero = () => {
     }
   };
   
-  const extractBotResponse = (data) => {
-    console.log('🔍 Dados recebidos completos:', JSON.stringify(data, null, 2));
+  // ✅ FUNÇÃO MELHORADA: Extrair mensagens (suporta array ou string única)
+  const extractBotMessages = (data) => {
+    console.log('🔍 Dados recebidos:', JSON.stringify(data, null, 2));
     
-    const possiblePaths = [
-      data?.message,
-      data?.response,
-      data?.output,
-      data?.text,
-      data?.data?.message,
-      data?.data?.response,
-      data?.result?.message,
-      data?.body?.message,
-    ];
+    // Verificar se há múltiplas mensagens (array)
+    if (data?.messages && Array.isArray(data.messages) && data.messages.length > 0) {
+      console.log('✅ Array de mensagens encontrado:', data.messages.length);
+      return data.messages;
+    }
     
-    for (const path of possiblePaths) {
-      if (typeof path === 'string' && path.trim().length > 0) {
-        console.log('✅ Resposta encontrada em:', path);
-        return path.trim();
+    // Verificar mensagem única
+    const singleMessage = data?.message || data?.response || data?.output || data?.text;
+    if (singleMessage && typeof singleMessage === 'string') {
+      console.log('✅ Mensagem única encontrada');
+      return [singleMessage];
+    }
+    
+    // Se data em si é uma string
+    if (typeof data === 'string' && data.trim()) {
+      return [data.trim()];
+    }
+    
+    console.log('⚠️ Formato de resposta não reconhecido');
+    return ["Desculpe, não consegui processar sua mensagem no momento."];
+  };
+  
+  // ✅ FUNÇÃO NOVA: Adicionar mensagens com delay (simulando digitação)
+  const addMessagesWithDelay = async (messagesArray) => {
+    const DELAY_BETWEEN_MESSAGES = 1200; // 1.2 segundos entre cada mensagem
+    
+    for (let i = 0; i < messagesArray.length; i++) {
+      // Aguardar antes de mostrar a próxima mensagem (exceto a primeira)
+      if (i > 0) {
+        await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_MESSAGES));
       }
+      
+      const botMessage = {
+        id: Date.now() + i,
+        text: messagesArray[i],
+        isBot: true,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, botMessage]);
+      
+      // Forçar scroll para a última mensagem
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTo({
+            top: chatContainerRef.current.scrollHeight,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
     }
-    
-    if (typeof data === 'object' && data !== null) {
-      console.log('⚠️ Nenhuma resposta padrão encontrada, usando fallback');
-      return "Recebi sua mensagem, mas houve um problema na formatação da resposta. Por favor, tente novamente.";
-    }
-    
-    console.log('❌ Nenhuma resposta válida encontrada');
-    return "Desculpe, não consegui processar sua mensagem no momento.";
   };
   
   const sendMessage = async (message) => {
@@ -108,7 +136,6 @@ const Hero = () => {
     setInputMessage("");
     setIsLoading(true);
     setConnectionStatus('online');
-    setShouldAutoScroll(false);
     
     try {
       const requestBody = {
@@ -139,8 +166,8 @@ const Hero = () => {
       
       if (!response.ok) {
         const errorText = await response.text();
-        console.log('❌ Corpo do erro:', errorText);
-        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+        console.error('❌ Erro HTTP:', errorText);
+        throw new Error(`Erro HTTP: ${response.status}`);
       }
       
       const responseText = await response.text();
@@ -150,27 +177,20 @@ const Hero = () => {
       try {
         data = JSON.parse(responseText);
       } catch (parseError) {
-        console.log('⚠️ Erro ao fazer parse do JSON, usando resposta como texto');
+        console.log('⚠️ Resposta não é JSON, usando como texto');
         data = { message: responseText };
       }
       
-      console.log('📥 Dados processados:', data);
+      console.log('📦 Dados processados:', data);
       
-      const botResponseText = extractBotResponse(data);
+      // ✅ EXTRAIR MENSAGENS (array ou string única)
+      const botMessages = extractBotMessages(data);
+      console.log(`💬 Total de mensagens a exibir: ${botMessages.length}`);
       
-      const botMessage = {
-        id: Date.now() + 1,
-        text: botResponseText,
-        isBot: true,
-        timestamp: new Date()
-      };
+      // ✅ ADICIONAR MENSAGENS COM DELAY
+      await addMessagesWithDelay(botMessages);
       
-      setMessages(prev => [...prev, botMessage]);
       setConnectionStatus('online');
-      
-      setTimeout(() => {
-        setShouldAutoScroll(true);
-      }, 100);
       
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
@@ -178,27 +198,24 @@ const Hero = () => {
       let errorMessage;
       
       if (error.name === 'AbortError') {
-        errorMessage = "A requisição demorou muito para responder. Por favor, tente novamente.";
+        errorMessage = "A requisição demorou muito. Tente novamente.";
         setConnectionStatus('error');
-      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-        errorMessage = "Problema de conexão. Verifique sua internet e tente novamente.";
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = "Problema de conexão. Verifique sua internet.";
         setConnectionStatus('offline');
       } else {
-        errorMessage = "Ops! Estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.";
+        errorMessage = "Desculpe, estou com problemas técnicos no momento.";
         setConnectionStatus('error');
       }
       
       const errorMsg = {
-        id: Date.now() + 1,
+        id: Date.now() + 999,
         text: errorMessage,
         isBot: true,
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, errorMsg]);
-      setTimeout(() => {
-        setShouldAutoScroll(true);
-      }, 100);
     } finally {
       setIsLoading(false);
       setTimeout(() => {
@@ -214,19 +231,12 @@ const Hero = () => {
       e.preventDefault();
       e.stopPropagation();
     }
-    
-    const currentScrollY = window.scrollY;
     sendMessage(inputMessage);
-    
-    setTimeout(() => {
-      window.scrollTo(0, currentScrollY);
-    }, 0);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      e.stopPropagation();
       handleSubmit();
     }
   };
@@ -326,7 +336,7 @@ const Hero = () => {
                       <p className="text-xs opacity-90">Consultora da Vision AI</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor()} ${connectionStatus === 'online' ? 'animate-pulse' : ''}`}></div>
-                        <span className="text-xs opacity-75">Online</span>
+                        <span className="text-xs opacity-75">{getStatusText()}</span>
                       </div>
                     </div>
                   </div>
@@ -335,13 +345,6 @@ const Hero = () => {
                 <div 
                   ref={chatContainerRef}
                   className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50"
-                  onScroll={() => {
-                    const container = chatContainerRef.current;
-                    if (container) {
-                      const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
-                      setShouldAutoScroll(isAtBottom);
-                    }
-                  }}
                 >
                   {messages.map((message) => (
                     <div
