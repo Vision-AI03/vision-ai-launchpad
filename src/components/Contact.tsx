@@ -32,7 +32,7 @@ const Contact = () => {
     };
 
     console.log("=== TENTANDO ENVIAR ===");
-    console.log("URL:", "https://n8n.agenciavisionai.com/webhook/chat-sophia");
+    console.log("URL:", "https://n8n.agenciavisionai.com/webhook/contact-form");
     console.log("Payload:", payload);
 
     try {
